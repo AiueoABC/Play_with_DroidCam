@@ -2,7 +2,7 @@ import cv2
 import urllib.request as urlreq
 
 PROTOCOL = 'http'  # Keep this
-IP = '192.168.0.54'  # Use one in DroidCAM
+IP = '192.168.0.53'  # Use one in DroidCAM
 PORT = '4747'  # Use one in DroidCAM
 DIRNAME = 'video'
 # SIZE320x240 = '?320X240'
@@ -70,6 +70,9 @@ if __name__ == '__main__':
 
         elif key == ord('-'):
             readHTML(zoomOut)
+
+        elif key == ord('r'):
+            readHTML(fpsRestriction)
 
     cap.release()
     cv2.destroyAllWindows()
