@@ -12,4 +12,5 @@ You can control your camera with key stroke on a video window. For example;
 * 'l' :  Toggle LED
 * '+' :  Zoom In
 * '-' :  Zoom Out
+* 'r' :  Limit FPS
 * 'q' :  Quit
