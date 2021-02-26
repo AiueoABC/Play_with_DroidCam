@@ -8,6 +8,7 @@ You need an app named "DroidCam" for this in your Android phone.
 * Download DroidCam app on your Android and check IP and PORT.
 * Rewrite IP and PORT inside capture.py.
 * Run capture.py to access your Android's camera.
+This is an example; python 'xxx.xxx.xxx.xxx' 'yyyy'. 'xxx.xxx.xxx.xxx' should be the IP and 'yyyy' should be the port. 
 
 # Camera Control
 You can control your camera with key stroke on a video window. For example;
