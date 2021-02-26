@@ -1,9 +1,15 @@
 import cv2
 import urllib.request as urlreq
+import sys
 
 PROTOCOL = 'http'  # Keep this
 IP = '192.168.0.53'  # Use one in DroidCAM
 PORT = '4747'  # Use one in DroidCAM
+
+if len[sys.argv] > 3:
+    IP = sys.argv[1]
+    PORT = sys.argv[2]
+
 DIRNAME = 'video'
 # SIZE320x240 = '?320X240'
 # SIZE640x480 = '?640X480'  # Default
