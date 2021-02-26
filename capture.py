@@ -6,7 +6,7 @@ PROTOCOL = 'http'  # Keep this
 IP = '192.168.0.53'  # Use one in DroidCAM
 PORT = '4747'  # Use one in DroidCAM
 
-if len[sys.argv] > 3:
+if len(sys.argv) == 3:
     IP = sys.argv[1]
     PORT = sys.argv[2]
 
