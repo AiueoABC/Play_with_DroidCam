@@ -1,4 +1,5 @@
 import cv2
+import PySimpleGUI as sg
 import urllib.request as urlreq
 import sys
 
@@ -48,39 +49,61 @@ getBattery = cameraURI + 'battery'  # Ask BAT level
 
 def cmdSender(cmd):
     fp = urlreq.urlopen(cmd)
-    print('\r' + fp.read().decode("utf8"), end="")
+    # print('\r' + fp.read().decode("utf8"), end="")
+    ret = fp.read().decode("utf8")
     fp.close()
+    return ret
 
+
+"""
+GUI Definition
+"""
+sg.theme('Black')
+
+# define the window layout
+layout = [
+        [sg.Text('Realtime movie', size=(40, 1), justification='center', font='Helvetica 20', key='-status-')],
+        [sg.Button('LED ON/OFF', size=(10, 1), font='Helvetica 14'),
+         sg.Button('AutoFocus', size=(10, 1), font='Helvetica 14'),
+         sg.Button('Zoom +', size=(10, 1), font='Helvetica 14'),
+         sg.Button('Zoom -', size=(10, 1), font='Helvetica 14'),
+         sg.Button('FPS Restriction', size=(10, 1), font='Helvetica 14'), ],
+        [sg.Image(filename='', key='image')],
+        [sg.Button('Exit', size=(10, 1), font='Helvetica 14')]
+        ]
+
+# create the window and show it without the plot
+window = sg.Window('Realtime movie', layout, location=(800, 400), finalize=True)
 
 if __name__ == '__main__':
     cap = cv2.VideoCapture(cameraURI + DIRNAME)
-    # Exposure Lock
-    # readHTML(exposurelockOn)
-    # Set White-balance
-    # readHTML(setwbAuto)
 
     while True:
         ret, frame = cap.read()
-        cv2.imshow('frame', frame)
-        cmdSender(getBattery)
-        key = cv2.waitKey(1) & 0xFF
-        if key == ord('q'):
+        window.set_title('Realtime movie --- Battery:' + cmdSender(getBattery) + ' %')
+        if ret is True:
+            imgbytes = cv2.imencode('.png', frame)[1].tobytes()
+            window['image'].update(data=imgbytes)
+        event, values = window.read(timeout=2)
+        if event in (None, 'Exit'):
             break
 
-        elif key == ord('f'):
+        elif event == 'AutoFocus':
             cmdSender(autoFocus)
 
-        elif key == ord('l'):
+        elif event == 'LED ON/OFF':
             cmdSender(toggleLED)
 
-        elif key == ord('+'):
+        elif event == 'Zoom +':
             cmdSender(zoomIn)
 
-        elif key == ord('-'):
+        elif event == 'Zoom -':
             cmdSender(zoomOut)
 
-        elif key == ord('r'):
+        elif event == 'FPS Restriction':
             cmdSender(fpsRestriction)
+
+    window.close()
 
     cap.release()
     cv2.destroyAllWindows()
