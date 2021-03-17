@@ -1,4 +1,9 @@
 # Play_with_DroidCam
+***
+SEE "ORIGINAL" BRANCH FOR CUI VERSION
+***
+
+
 Control camera on your Android from PC with Python
 
 
@@ -11,13 +16,7 @@ You need an app named "DroidCam" for this in your Android phone.
 This is an example; python capture.py 'xxx.xxx.xxx.xxx' 'yyyy'. 'xxx.xxx.xxx.xxx' should be the IP and 'yyyy' should be the port. 
 
 # Camera Control
-You can control your camera with key stroke on a video window. For example;
-* 'f' :  Execute AutoFocus
-* 'l' :  Toggle LED
-* '+' :  Zoom In
-* '-' :  Zoom Out
-* 'r' :  Limit FPS
-* 'q' :  Quit
+You can control your camera with pushing buttons on a video window.
 
 
 # If you like,
