@@ -24,14 +24,14 @@ Cam Settings
 exposurelockOn = cameraURI + 'cam/1/set_exposure_lock'
 exposurelockOff = cameraURI + 'cam/1/unset_exposure_lock'
 
-setwbAuto = cameraURI + '/cam/1/set_wb/auto'  # Default
-setwbIncandescent = cameraURI + '/cam/1/set_wb/incandescent'
-setwbWarmfluorescent = cameraURI + '/cam/1/set_wb/warm-fluorescent'
-setwbTwilight = cameraURI + '/cam/1/set_wb/twilight'
-setwbFluorescent = cameraURI + '/cam/1/set_wb/fluorescent'
-setwbDaylight = cameraURI + '/cam/1/set_wb/daylight'
-setwbCloudydaylight = cameraURI + '/cam/1/set_wb/cloudy-daylight'
-setwbShade = cameraURI + '/cam/1/set_wb/shade'
+setwbAuto = cameraURI + 'cam/1/set_wb/auto'  # Default
+setwbIncandescent = cameraURI + 'cam/1/set_wb/incandescent'
+setwbWarmfluorescent = cameraURI + 'cam/1/set_wb/warm-fluorescent'
+setwbTwilight = cameraURI + 'cam/1/set_wb/twilight'
+setwbFluorescent = cameraURI + 'cam/1/set_wb/fluorescent'
+setwbDaylight = cameraURI + 'cam/1/set_wb/daylight'
+setwbCloudydaylight = cameraURI + 'cam/1/set_wb/cloudy-daylight'
+setwbShade = cameraURI + 'cam/1/set_wb/shade'
 
 '''
 Useful Functions
