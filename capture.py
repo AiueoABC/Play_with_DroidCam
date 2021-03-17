@@ -19,33 +19,35 @@ DIRNAME = 'video'
 cameraURI = PROTOCOL + '://' + IP + ':' + PORT + '/'
 
 '''
-Cam Settings
+Cam Settings Commands
 '''
+# Exposure
 exposurelockOn = cameraURI + 'cam/1/set_exposure_lock'
 exposurelockOff = cameraURI + 'cam/1/unset_exposure_lock'
 
+# White Balance
 setwbAuto = cameraURI + 'cam/1/set_wb/auto'  # Default
-setwbIncandescent = cameraURI + 'cam/1/set_wb/incandescent'
-setwbWarmfluorescent = cameraURI + 'cam/1/set_wb/warm-fluorescent'
-setwbTwilight = cameraURI + 'cam/1/set_wb/twilight'
-setwbFluorescent = cameraURI + 'cam/1/set_wb/fluorescent'
-setwbDaylight = cameraURI + 'cam/1/set_wb/daylight'
-setwbCloudydaylight = cameraURI + 'cam/1/set_wb/cloudy-daylight'
-setwbShade = cameraURI + 'cam/1/set_wb/shade'
+setwbIncandescent = cameraURI + 'cam/1/set_wb/incandescent'  # Incandescent mode
+setwbWarmfluorescent = cameraURI + 'cam/1/set_wb/warm-fluorescent'  # Warmfluorescent mode
+setwbTwilight = cameraURI + 'cam/1/set_wb/twilight'  # Twilight mode
+setwbFluorescent = cameraURI + 'cam/1/set_wb/fluorescent'  # Florescent mode
+setwbDaylight = cameraURI + 'cam/1/set_wb/daylight'  # Daylight mode
+setwbCloudydaylight = cameraURI + 'cam/1/set_wb/cloudy-daylight'  # Cloudy mode
+setwbShade = cameraURI + 'cam/1/set_wb/shade'  # Shade mode
 
 '''
-Useful Functions
+Useful Functions Commands
 '''
-autoFocus = cameraURI + 'cam/1/af'   # ブラウザでURLをたたくとAF
-zoomIn = cameraURI + 'cam/1/zoomin'   # ブラウザでURLをたたくとZoomIn
-zoomOut = cameraURI + 'cam/1/zoomout'   # ブラウザでURLをたたくとZoomOut
-toggleLED = cameraURI + 'cam/1/led_toggle'  # ブラウザでURLをたたくとLED ON/OFF
-fpsRestriction = cameraURI + 'cam/1/fpslimit'  # ブラウザでURLをたたくとFPSを著しく下げる
-getBattery = cameraURI + 'battery'  # ブラウザでURLをたたくとバッテリレベルでる
+autoFocus = cameraURI + 'cam/1/af'   # Execute Auto-Focus
+zoomIn = cameraURI + 'cam/1/zoomin'   # Execute Zoom-in
+zoomOut = cameraURI + 'cam/1/zoomout'   # Execute Zoom-out
+toggleLED = cameraURI + 'cam/1/led_toggle'  # Change LED light ON/OFF
+fpsRestriction = cameraURI + 'cam/1/fpslimit'  # Execute FPS restriction
+getBattery = cameraURI + 'battery'  # Ask BAT level
 
 
-def readHTML(uri):
-    fp = urlreq.urlopen(uri)
+def cmdSender(cmd):
+    fp = urlreq.urlopen(cmd)
     print('\r' + fp.read().decode("utf8"), end="")
     fp.close()
 
@@ -60,25 +62,25 @@ if __name__ == '__main__':
     while True:
         ret, frame = cap.read()
         cv2.imshow('frame', frame)
-        readHTML(getBattery)
+        cmdSender(getBattery)
         key = cv2.waitKey(1) & 0xFF
         if key == ord('q'):
             break
 
         elif key == ord('f'):
-            readHTML(autoFocus)
+            cmdSender(autoFocus)
 
         elif key == ord('l'):
-            readHTML(toggleLED)
+            cmdSender(toggleLED)
 
         elif key == ord('+'):
-            readHTML(zoomIn)
+            cmdSender(zoomIn)
 
         elif key == ord('-'):
-            readHTML(zoomOut)
+            cmdSender(zoomOut)
 
         elif key == ord('r'):
-            readHTML(fpsRestriction)
+            cmdSender(fpsRestriction)
 
     cap.release()
     cv2.destroyAllWindows()
