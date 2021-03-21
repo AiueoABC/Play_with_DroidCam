@@ -11,6 +11,44 @@ if len(sys.argv) == 3:
     IP = sys.argv[1]
     PORT = sys.argv[2]
 
+ask_settings = True
+try:
+    with open('./capture_settings.dat') as f:
+        l_strip = [s.strip() for s in f.readlines()]
+        for data in l_strip:
+            if 'ip' in data:
+                IP = data.split('=')[1]
+            elif 'port' in data:
+                PORT = data.split('=')[1]
+            elif 'ask_settings' in data and 'False' in data:
+                ask_settings = False
+except Exception as e:
+    print(e)
+
+'''
+GUI IP/PORT Setting
+'''
+if ask_settings:
+    layout = [
+        [sg.Text('IP/PORT Setting')],
+        [sg.Text('IP', size=(15, 1)), sg.InputText(IP)],
+        [sg.Text('PORT', size=(15, 1)), sg.InputText(PORT)],
+        [sg.Submit(button_text='Check'), sg.Submit(button_text='Next')]
+    ]
+    settingwindow = sg.Window('IP/PORT Setting', layout, location=(800, 400), finalize=True)
+    while True:
+        event, values = settingwindow.read()
+        if event in (None, 'Next'):
+            break
+        if event == 'Check':
+            IP = values[0]
+            PORT = values[1]
+            show_message = 'Your settings are;\n'
+            show_message += "IP: " + IP + '\n'
+            show_message += "PORT: " + PORT
+            sg.popup(show_message)
+    settingwindow.close()
+
 DIRNAME = 'video'
 # SIZE320x240 = '?320X240'
 # SIZE640x480 = '?640X480'  # Default
@@ -80,11 +118,11 @@ if __name__ == '__main__':
 
     while True:
         ret, frame = cap.read()
-        window.set_title('Realtime movie --- Battery:' + cmdSender(getBattery) + ' %')
         if ret is True:
             imgbytes = cv2.imencode('.png', frame)[1].tobytes()
             window['image'].update(data=imgbytes)
         event, values = window.read(timeout=2)
+        window.set_title('Realtime movie --- Battery:' + cmdSender(getBattery) + ' %')
         if event in (None, 'Exit'):
             break
 
