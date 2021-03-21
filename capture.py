@@ -1,16 +1,14 @@
 import cv2
 import PySimpleGUI as sg
 import urllib.request as urlreq
-import sys
 
 PROTOCOL = 'http'  # Keep this
 IP = '192.168.0.53'  # Use one in DroidCAM
 PORT = '4747'  # Use one in DroidCAM
 
-if len(sys.argv) == 3:
-    IP = sys.argv[1]
-    PORT = sys.argv[2]
-
+'''
+Read IP/PORT settings
+'''
 ask_settings = True
 try:
     with open('./capture_settings.dat') as f:
