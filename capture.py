@@ -84,9 +84,13 @@ getBattery = cameraURI + 'battery'  # Ask BAT level
 
 
 def cmdSender(cmd):
+    ret = ''
     fp = urlreq.urlopen(cmd)
     # print('\r' + fp.read().decode("utf8"), end="")
-    ret = fp.read().decode("utf8")
+    try:
+        ret = fp.read().decode("utf8")
+    except Exception as e:
+        print(e)
     fp.close()
     return ret
 
@@ -114,13 +118,14 @@ window = sg.Window('Realtime movie', layout, location=(800, 400), finalize=True)
 if __name__ == '__main__':
     cap = cv2.VideoCapture(cameraURI + DIRNAME)
 
-    while True:
+    while cap.isOpened():
         ret, frame = cap.read()
         if ret is True:
             imgbytes = cv2.imencode('.png', frame)[1].tobytes()
             window['image'].update(data=imgbytes)
-        event, values = window.read(timeout=2)
-        window.set_title('Realtime movie --- Battery:' + cmdSender(getBattery) + ' %')
+            # cv2.imshow('DroidCamImage', frame)
+            window.set_title('Realtime movie --- Battery:' + cmdSender(getBattery) + ' %')
+        event, values = window.read(timeout=1)
         if event in (None, 'Exit'):
             break
 
