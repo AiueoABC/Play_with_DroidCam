@@ -102,15 +102,55 @@ sg.theme('Black')
 
 # define the window layout
 layout = [
-        [sg.Text('Realtime movie', size=(40, 1), justification='center', font='Helvetica 20', key='-status-')],
+        [sg.Text('DroidCam Movie', size=(40, 1), justification='center', font='Helvetica 20', key='-status-')],
         [sg.Button('LED ON/OFF', size=(10, 1), font='Helvetica 14'),
          sg.Button('AutoFocus', size=(10, 1), font='Helvetica 14'),
          sg.Button('Zoom +', size=(10, 1), font='Helvetica 14'),
          sg.Button('Zoom -', size=(10, 1), font='Helvetica 14'),
          sg.Button('FPS Restriction', size=(10, 1), font='Helvetica 14'), ],
+        [sg.Button('Exp.Lock ON', size=(10, 1), font='Helvetica 14'),
+         sg.Button('Exp.Lock OFF', size=(10, 1), font='Helvetica 14'),
+         sg.Button('WB Settings...', size=(10, 1), font='Helvetica 14'), ],
         [sg.Image(filename='', key='image')],
         [sg.Button('Exit', size=(10, 1), font='Helvetica 14')]
         ]
+wbsetter_layout = [
+                    [sg.Button('Auto WB', size=(15, 2), font='Helvetica 14'),
+                     sg.Button('Incandescent', size=(15, 2), font='Helvetica 14'),
+                     sg.Button('Warm Fluorescent', size=(15, 2), font='Helvetica 14'),
+                     sg.Button('Twilight', size=(15, 2), font='Helvetica 14'), ],
+                    [sg.Button('Florescent', size=(15, 2), font='Helvetica 14'),
+                     sg.Button('Daylight', size=(15, 2), font='Helvetica 14'),
+                     sg.Button('Cloudy', size=(15, 2), font='Helvetica 14'),
+                     sg.Button('Shade', size=(15, 2), font='Helvetica 14'), ],
+                    [sg.Button('Done', size=(10, 1), font='Helvetica 14')]
+                    ]
+
+
+def wbSetting():
+    wbwindow = sg.Window('White Balance Settings', wbsetter_layout, location=(800, 400), finalize=True)
+    while True:
+        event, values = wbwindow.read(timeout=5)
+        if event in (None, 'Done'):
+            break
+        elif event == 'Auto WB':
+            cmdSender(setwbAuto)
+        elif event == 'Incandescent':
+            cmdSender(setwbIncandescent)
+        elif event == 'Warm Fluorescent':
+            cmdSender(setwbWarmfluorescent)
+        elif event == 'Twilight':
+            cmdSender(setwbTwilight)
+        elif event == 'Florescent':
+            cmdSender(setwbFluorescent)
+        elif event == 'Daylight':
+            cmdSender(setwbDaylight)
+        elif event == 'Cloudy':
+            cmdSender(setwbCloudydaylight)
+        elif event == 'Shade':
+            cmdSender(setwbShade)
+    wbwindow.close()
+
 
 # create the window and show it without the plot
 window = sg.Window('Realtime movie', layout, location=(800, 400), finalize=True)
@@ -143,6 +183,15 @@ if __name__ == '__main__':
 
         elif event == 'FPS Restriction':
             cmdSender(fpsRestriction)
+
+        elif event == 'Exp.Lock ON':
+            cmdSender(exposurelockOn)
+
+        elif event == 'Exp.Lock OFF':
+            cmdSender(exposurelockOff)
+
+        elif event == 'WB Settings...':
+            wbSetting()
 
     window.close()
 
