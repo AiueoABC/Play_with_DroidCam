@@ -5,6 +5,7 @@ SEE "ORIGINAL" BRANCH FOR CUI VERSION
 
 
 Control camera on your Android from PC with Python
+(Perhaps, iPhone too. Not tested yet.)
 
 
 You need an app named "DroidCam" for this in your Android phone.
