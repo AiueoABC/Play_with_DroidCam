@@ -1,3 +1,4 @@
+import time
 import cv2
 import PySimpleGUI as sg
 import urllib.request as urlreq
@@ -85,13 +86,12 @@ getBattery = cameraURI + 'battery'  # Ask BAT level
 
 def cmdSender(cmd):
     ret = ''
-    fp = urlreq.urlopen(cmd)
-    # print('\r' + fp.read().decode("utf8"), end="")
     try:
+        fp = urlreq.urlopen(cmd)
         ret = fp.read().decode("utf8")
+        fp.close()
     except Exception as e:
         print(e)
-    fp.close()
     return ret
 
 
@@ -117,7 +117,7 @@ window = sg.Window('Realtime movie', layout, location=(800, 400), finalize=True)
 
 if __name__ == '__main__':
     cap = cv2.VideoCapture(cameraURI + DIRNAME)
-
+    cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
     while cap.isOpened():
         ret, frame = cap.read()
         if ret is True:
