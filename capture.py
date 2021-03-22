@@ -1,3 +1,4 @@
+import copy
 import cv2
 import PySimpleGUI as sg
 import urllib.request as urlreq
@@ -37,6 +38,8 @@ if ask_settings:
     while True:
         event, values = settingwindow.read()
         if event in (None, 'Next'):
+            IP = values[0]
+            PORT = values[1]
             break
         if event == 'Check':
             IP = values[0]
@@ -85,13 +88,12 @@ getBattery = cameraURI + 'battery'  # Ask BAT level
 
 def cmdSender(cmd):
     ret = ''
-    fp = urlreq.urlopen(cmd)
-    # print('\r' + fp.read().decode("utf8"), end="")
     try:
+        fp = urlreq.urlopen(cmd)
         ret = fp.read().decode("utf8")
+        fp.close()
     except Exception as e:
         print(e)
-    fp.close()
     return ret
 
 
@@ -102,22 +104,64 @@ sg.theme('Black')
 
 # define the window layout
 layout = [
-        [sg.Text('Realtime movie', size=(40, 1), justification='center', font='Helvetica 20', key='-status-')],
-        [sg.Button('LED ON/OFF', size=(10, 1), font='Helvetica 14'),
-         sg.Button('AutoFocus', size=(10, 1), font='Helvetica 14'),
-         sg.Button('Zoom +', size=(10, 1), font='Helvetica 14'),
-         sg.Button('Zoom -', size=(10, 1), font='Helvetica 14'),
-         sg.Button('FPS Restriction', size=(10, 1), font='Helvetica 14'), ],
+        [sg.Text('DroidCam Movie', size=(40, 1), justification='center', font='Helvetica 20', key='-status-')],
+        [sg.Button('LED ON/OFF', size=(10, 2), font='Helvetica 14'),
+         sg.Button('AutoFocus', size=(10, 2), font='Helvetica 14'),
+         sg.Button('Zoom +', size=(10, 2), font='Helvetica 14'),
+         sg.Button('Zoom -', size=(10, 2), font='Helvetica 14'),
+         sg.Button('FPS Restriction', size=(10, 2), font='Helvetica 14'), ],
+        [sg.Button('Exp.Lock ON', size=(15, 2), font='Helvetica 14'),
+         sg.Button('Exp.Lock OFF', size=(15, 2), font='Helvetica 14'),
+         sg.Button('WB Settings...', size=(15, 2), font='Helvetica 14'), ],
         [sg.Image(filename='', key='image')],
         [sg.Button('Exit', size=(10, 1), font='Helvetica 14')]
         ]
+wbsetter_layout = [
+                    [sg.Button('Auto WB', size=(15, 2), font='Helvetica 14'),
+                     sg.Button('Incandescent', size=(15, 2), font='Helvetica 14'),
+                     sg.Button('Warm Fluorescent', size=(15, 2), font='Helvetica 14'),
+                     sg.Button('Twilight', size=(15, 2), font='Helvetica 14'), ],
+                    [sg.Button('Florescent', size=(15, 2), font='Helvetica 14'),
+                     sg.Button('Daylight', size=(15, 2), font='Helvetica 14'),
+                     sg.Button('Cloudy', size=(15, 2), font='Helvetica 14'),
+                     sg.Button('Shade', size=(15, 2), font='Helvetica 14'), ],
+                    [sg.Button('Done', size=(10, 1), font='Helvetica 14')]
+                    ]
+
+
+def wbSetting():
+    newlayout = copy.deepcopy(wbsetter_layout)  # bc you can't reuse layout defined before
+    wbwindow = sg.Window('White Balance Settings', newlayout, location=(800, 400), finalize=True)
+    while True:
+        event, values = wbwindow.read(timeout=5)
+        if event in (None, 'Done'):
+            break
+        elif event == 'Auto WB':
+            cmdSender(setwbAuto)
+        elif event == 'Incandescent':
+            cmdSender(setwbIncandescent)
+        elif event == 'Warm Fluorescent':
+            cmdSender(setwbWarmfluorescent)
+        elif event == 'Twilight':
+            cmdSender(setwbTwilight)
+        elif event == 'Florescent':
+            cmdSender(setwbFluorescent)
+        elif event == 'Daylight':
+            cmdSender(setwbDaylight)
+        elif event == 'Cloudy':
+            cmdSender(setwbCloudydaylight)
+        elif event == 'Shade':
+            cmdSender(setwbShade)
+    wbwindow.close()
+    del newlayout
+
 
 # create the window and show it without the plot
 window = sg.Window('Realtime movie', layout, location=(800, 400), finalize=True)
 
 if __name__ == '__main__':
     cap = cv2.VideoCapture(cameraURI + DIRNAME)
-
+    cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
     while cap.isOpened():
         ret, frame = cap.read()
         if ret is True:
@@ -143,6 +187,15 @@ if __name__ == '__main__':
 
         elif event == 'FPS Restriction':
             cmdSender(fpsRestriction)
+
+        elif event == 'Exp.Lock ON':
+            cmdSender(exposurelockOn)
+
+        elif event == 'Exp.Lock OFF':
+            cmdSender(exposurelockOff)
+
+        elif event == 'WB Settings...':
+            wbSetting()
 
     window.close()
 
