@@ -1,4 +1,4 @@
-import time
+import copy
 import cv2
 import PySimpleGUI as sg
 import urllib.request as urlreq
@@ -38,6 +38,8 @@ if ask_settings:
     while True:
         event, values = settingwindow.read()
         if event in (None, 'Next'):
+            IP = values[0]
+            PORT = values[1]
             break
         if event == 'Check':
             IP = values[0]
@@ -103,14 +105,14 @@ sg.theme('Black')
 # define the window layout
 layout = [
         [sg.Text('DroidCam Movie', size=(40, 1), justification='center', font='Helvetica 20', key='-status-')],
-        [sg.Button('LED ON/OFF', size=(10, 1), font='Helvetica 14'),
-         sg.Button('AutoFocus', size=(10, 1), font='Helvetica 14'),
-         sg.Button('Zoom +', size=(10, 1), font='Helvetica 14'),
-         sg.Button('Zoom -', size=(10, 1), font='Helvetica 14'),
-         sg.Button('FPS Restriction', size=(10, 1), font='Helvetica 14'), ],
-        [sg.Button('Exp.Lock ON', size=(10, 1), font='Helvetica 14'),
-         sg.Button('Exp.Lock OFF', size=(10, 1), font='Helvetica 14'),
-         sg.Button('WB Settings...', size=(10, 1), font='Helvetica 14'), ],
+        [sg.Button('LED ON/OFF', size=(10, 2), font='Helvetica 14'),
+         sg.Button('AutoFocus', size=(10, 2), font='Helvetica 14'),
+         sg.Button('Zoom +', size=(10, 2), font='Helvetica 14'),
+         sg.Button('Zoom -', size=(10, 2), font='Helvetica 14'),
+         sg.Button('FPS Restriction', size=(10, 2), font='Helvetica 14'), ],
+        [sg.Button('Exp.Lock ON', size=(15, 2), font='Helvetica 14'),
+         sg.Button('Exp.Lock OFF', size=(15, 2), font='Helvetica 14'),
+         sg.Button('WB Settings...', size=(15, 2), font='Helvetica 14'), ],
         [sg.Image(filename='', key='image')],
         [sg.Button('Exit', size=(10, 1), font='Helvetica 14')]
         ]
@@ -128,7 +130,8 @@ wbsetter_layout = [
 
 
 def wbSetting():
-    wbwindow = sg.Window('White Balance Settings', wbsetter_layout, location=(800, 400), finalize=True)
+    newlayout = copy.deepcopy(wbsetter_layout)  # bc you can't reuse layout defined before
+    wbwindow = sg.Window('White Balance Settings', newlayout, location=(800, 400), finalize=True)
     while True:
         event, values = wbwindow.read(timeout=5)
         if event in (None, 'Done'):
@@ -150,6 +153,7 @@ def wbSetting():
         elif event == 'Shade':
             cmdSender(setwbShade)
     wbwindow.close()
+    del newlayout
 
 
 # create the window and show it without the plot
