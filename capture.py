@@ -2,6 +2,7 @@ import copy
 import cv2
 import PySimpleGUI as sg
 import urllib.request as urlreq
+import time
 
 PROTOCOL = 'http'  # Keep this
 IP = '192.168.0.53'  # Use one in DroidCAM
@@ -52,7 +53,7 @@ if ask_settings:
 
 DIRNAME = 'video'
 # SIZE320x240 = '?320X240'
-# SIZE640x480 = '?640X480'  # Default
+SIZE640x480 = '?640X480'  # Default
 # SIZE1280x720 = '?1280X720'  # You need PRO license on DroidCAM
 # SIZE1920x1080 = '?1920X1080'  # You Need PRO license on DroidCAM
 
@@ -160,9 +161,14 @@ def wbSetting():
 window = sg.Window('Realtime movie', layout, location=(800, 400), finalize=True)
 
 if __name__ == '__main__':
-    cap = cv2.VideoCapture(cameraURI + DIRNAME)
+    cap = cv2.VideoCapture(cameraURI + DIRNAME + SIZE640x480)
+    # cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('B', 'G', 'R', '3'));
+    # cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'));
+    cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('H', '2', '6', '4'));
+    # cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('Y', 'U', 'Y', 'V'));
     cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
     while cap.isOpened():
+        time0 = time.time()
         ret, frame = cap.read()
         if ret is True:
             imgbytes = cv2.imencode('.png', frame)[1].tobytes()
