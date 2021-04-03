@@ -2,6 +2,7 @@ import copy
 import cv2
 import PySimpleGUI as sg
 import urllib.request as urlreq
+import multiprocessing as mp
 
 PROTOCOL = 'http'  # Keep this
 IP = '192.168.0.53'  # Use one in DroidCAM
@@ -159,18 +160,24 @@ def wbSetting():
 # create the window and show it without the plot
 window = sg.Window('Realtime movie', layout, location=(800, 400), finalize=True)
 
-if __name__ == '__main__':
-    cap = cv2.VideoCapture(cameraURI + DIRNAME)
-    cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-    while cap.isOpened():
-        ret, frame = cap.read()
-        if ret is True:
+def main_gui(ret_q, frame_q, exit_q, finished_q):
+    while True:
+        exit_q.put(False)
+        ret, frame = ret_q.get(), frame_q.get()
+        if ret:
             imgbytes = cv2.imencode('.png', frame)[1].tobytes()
             window['image'].update(data=imgbytes)
             # cv2.imshow('DroidCamImage', frame)
             window.set_title('Realtime movie --- Battery:' + cmdSender(getBattery) + ' %')
+        while frame_q.qsize() > 0:
+            # To kill buffers
+            try:
+                frame_q.get_nowait(), ret_q.get_nowait()
+            except:
+                pass
         event, values = window.read(timeout=1)
         if event in (None, 'Exit'):
+            exit_q.put(True)
             break
 
         elif event == 'AutoFocus':
@@ -198,6 +205,82 @@ if __name__ == '__main__':
             wbSetting()
 
     window.close()
+    finished_q.put(True)
+    exit_q.put(True)
 
+
+def main_capture(ret_q, frame_q, exit_q, finished_q):
+    cap = cv2.VideoCapture(cameraURI + DIRNAME)
+    cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+    while cap.isOpened():
+        if exit_q.get():
+            break
+        ret, frame = cap.read()
+        ret_q.put(ret), frame_q.put(frame)
     cap.release()
-    cv2.destroyAllWindows()
+    finished_q.put(True)
+
+if __name__ == '__main__':
+    ret_q, frame_q, exit_q, finished_q = mp.Queue(), mp.Queue(), mp.Queue(), mp.Queue()
+    ps = [
+        mp.Process(target=main_gui, args=(ret_q, frame_q, exit_q, finished_q)),
+        mp.Process(target=main_capture, args=(ret_q, frame_q, exit_q, finished_q)),
+    ]
+    for p in ps:
+        p.start()
+    finished_q.get()
+    finished_q.get()
+    print("Process will down")
+    ret_q.close()
+    ret_q.join_thread()
+    frame_q.close()
+    frame_q.join_thread()
+    exit_q.close()
+    exit_q.join_thread()
+    finished_q.close()
+    finished_q.join_thread()
+    for p in ps:
+        print("terminating...", flush = True)
+        p.terminate()
+        p.join()
+    # cap = cv2.VideoCapture(cameraURI + DIRNAME)
+    # cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+    # while cap.isOpened():
+    #     ret, frame = cap.read()
+    #     if ret:
+    #         imgbytes = cv2.imencode('.png', frame)[1].tobytes()
+    #         window['image'].update(data=imgbytes)
+    #         # cv2.imshow('DroidCamImage', frame)
+    #         window.set_title('Realtime movie --- Battery:' + cmdSender(getBattery) + ' %')
+    #     event, values = window.read(timeout=1)
+    #     if event in (None, 'Exit'):
+    #         break
+    #
+    #     elif event == 'AutoFocus':
+    #         cmdSender(autoFocus)
+    #
+    #     elif event == 'LED ON/OFF':
+    #         cmdSender(toggleLED)
+    #
+    #     elif event == 'Zoom +':
+    #         cmdSender(zoomIn)
+    #
+    #     elif event == 'Zoom -':
+    #         cmdSender(zoomOut)
+    #
+    #     elif event == 'FPS Restriction':
+    #         cmdSender(fpsRestriction)
+    #
+    #     elif event == 'Exp.Lock ON':
+    #         cmdSender(exposurelockOn)
+    #
+    #     elif event == 'Exp.Lock OFF':
+    #         cmdSender(exposurelockOff)
+    #
+    #     elif event == 'WB Settings...':
+    #         wbSetting()
+    #
+    # window.close()
+    #
+    # cap.release()
+    # cv2.destroyAllWindows()
