@@ -1,5 +1,6 @@
 import copy
 import cv2
+from PIL import Image, ImageTk
 import PySimpleGUI as sg
 import urllib.request as urlreq
 import time
@@ -52,7 +53,7 @@ if ask_settings:
     settingwindow.close()
 
 DIRNAME = 'video'
-# SIZE320x240 = '?320X240'
+SIZE320x240 = '?320X240'
 SIZE640x480 = '?640X480'  # Default
 # SIZE1280x720 = '?1280X720'  # You need PRO license on DroidCAM
 # SIZE1920x1080 = '?1920X1080'  # You Need PRO license on DroidCAM
@@ -106,14 +107,16 @@ sg.theme('Black')
 # define the window layout
 layout = [
         [sg.Text('DroidCam Movie', size=(40, 1), justification='center', font='Helvetica 20', key='-status-')],
-        [sg.Button('LED ON/OFF', size=(10, 2), font='Helvetica 14'),
-         sg.Button('AutoFocus', size=(10, 2), font='Helvetica 14'),
-         sg.Button('Zoom +', size=(10, 2), font='Helvetica 14'),
-         sg.Button('Zoom -', size=(10, 2), font='Helvetica 14'),
-         sg.Button('FPS Restriction', size=(10, 2), font='Helvetica 14'), ],
-        [sg.Button('Exp.Lock ON', size=(15, 2), font='Helvetica 14'),
-         sg.Button('Exp.Lock OFF', size=(15, 2), font='Helvetica 14'),
-         sg.Button('WB Settings...', size=(15, 2), font='Helvetica 14'), ],
+        [sg.Button('LED ON/OFF', size=(12, 2), font='Helvetica 14'),
+         sg.Button('AutoFocus', size=(12, 2), font='Helvetica 14'),
+         sg.Button('Zoom +', size=(12, 2), font='Helvetica 14'),
+         sg.Button('Zoom -', size=(12, 2), font='Helvetica 14'),
+         sg.Button('FPS Restriction', size=(12, 2), font='Helvetica 14'), ],
+        [sg.Button('Exp.Lock ON', size=(12, 2), font='Helvetica 14'),
+         sg.Button('Exp.Lock OFF', size=(12, 2), font='Helvetica 14'),
+         sg.Button('WB Settings...', size=(12, 2), font='Helvetica 14'),
+         sg.Button('640X480', size=(12, 2), font='Helvetica 14'),
+         sg.Button('320X240', size=(12, 2), font='Helvetica 14'),],
         [sg.Image(filename='', key='image')],
         [sg.Button('Exit', size=(10, 1), font='Helvetica 14')]
         ]
@@ -158,21 +161,19 @@ def wbSetting():
 
 
 # create the window and show it without the plot
-window = sg.Window('Realtime movie', layout, location=(800, 400), finalize=True)
+window = sg.Window('Realtime movie', layout, location=(800, 400), finalize=True, element_justification='center')
 
 if __name__ == '__main__':
     cap = cv2.VideoCapture(cameraURI + DIRNAME + SIZE640x480)
-    # cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('B', 'G', 'R', '3'));
-    # cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'));
-    cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('H', '2', '6', '4'));
-    # cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('Y', 'U', 'Y', 'V'));
+    # cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('B', 'G', 'R', '3'))
+    # cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'))
+    cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('H', '2', '6', '4'))  # Not sure this works
+    # cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('Y', 'U', 'Y', 'V'))
     cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
     while cap.isOpened():
-        time0 = time.time()
         ret, frame = cap.read()
         if ret is True:
-            imgbytes = cv2.imencode('.png', frame)[1].tobytes()
-            window['image'].update(data=imgbytes)
+            window['image'].update(data=cv2.imencode('.png', frame)[1].tobytes())
             # cv2.imshow('DroidCamImage', frame)
             window.set_title('Realtime movie --- Battery:' + cmdSender(getBattery) + ' %')
         event, values = window.read(timeout=1)
@@ -202,6 +203,23 @@ if __name__ == '__main__':
 
         elif event == 'WB Settings...':
             wbSetting()
+
+        elif event == '640X480':
+            cap.release()
+            time.sleep(1)
+            cap = cv2.VideoCapture(cameraURI + DIRNAME + SIZE640x480)
+            cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('H', '2', '6', '4'))
+
+        elif event == '320X240':
+            cap.release()
+            time.sleep(1)
+            cap = cv2.VideoCapture(cameraURI + DIRNAME + SIZE320x240)
+            cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('H', '2', '6', '4'))
+
+        """
+        To Clear Buffers... I know this is stupid.
+        """
+        cap.read(), cap.read(), cap.read()
 
     window.close()
 
