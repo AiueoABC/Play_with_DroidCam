@@ -118,6 +118,11 @@ layout = [
          sg.Button('640X480', size=(12, 2), font='Helvetica 14'),
          sg.Button('320X240', size=(12, 2), font='Helvetica 14'),],
         [sg.Image(filename='', key='image')],
+        [sg.Radio("Low Buffer", group_id=0, key='radio0', font='Helvetica 14'),
+         sg.Radio("MidLow Buffer", group_id=0, default=True, key='radio1', font='Helvetica 14'),
+         sg.Radio("Middle Buffer", group_id=0, key='radio2', font='Helvetica 14'),
+         sg.Radio("MidHigh Buffer", group_id=0, key='radio3', font='Helvetica 14'),
+         sg.Radio("High Buffer", group_id=0, key='radio4', font='Helvetica 14')],
         [sg.Button('Exit', size=(10, 1), font='Helvetica 14')]
         ]
 wbsetter_layout = [
@@ -219,7 +224,14 @@ if __name__ == '__main__':
         """
         To Clear Buffers... I know this is stupid.
         """
-        cap.read(), cap.read(), cap.read()
+        if values['radio0']:
+            cap.read(), cap.read(), cap.read(), cap.read()
+        elif values['radio1']:
+            cap.read(), cap.read(), cap.read()
+        elif values['radio2']:
+            cap.read(), cap.read()
+        elif values['radio3']:
+            cap.read()
 
     window.close()
 
