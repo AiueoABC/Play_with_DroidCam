@@ -1,6 +1,5 @@
 import copy
 import cv2
-from PIL import Image, ImageTk
 import PySimpleGUI as sg
 import urllib.request as urlreq
 import time
