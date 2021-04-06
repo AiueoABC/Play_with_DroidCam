@@ -117,11 +117,13 @@ layout = [
          sg.Button('640X480', size=(12, 2), font='Helvetica 14'),
          sg.Button('320X240', size=(12, 2), font='Helvetica 14'),],
         [sg.Image(filename='', key='image')],
+        [sg.Text('FASTER ←', size=(25, 1), justification='left', font='Helvetica 16'),
+         sg.Text('→ SMOOTHER', size=(25, 1), justification='right', font='Helvetica 16')],
         [sg.Radio("Low Buffer", group_id=0, key='radio0', font='Helvetica 14'),
-         sg.Radio("MidLow Buffer", group_id=0, default=True, key='radio1', font='Helvetica 14'),
+         sg.Radio("MidLow Buffer", group_id=0, key='radio1', font='Helvetica 14'),
          sg.Radio("Middle Buffer", group_id=0, key='radio2', font='Helvetica 14'),
          sg.Radio("MidHigh Buffer", group_id=0, key='radio3', font='Helvetica 14'),
-         sg.Radio("High Buffer", group_id=0, key='radio4', font='Helvetica 14')],
+         sg.Radio("High Buffer", group_id=0, default=True, key='radio4', font='Helvetica 14')],
         [sg.Button('Exit', size=(10, 1), font='Helvetica 14')]
         ]
 wbsetter_layout = [
