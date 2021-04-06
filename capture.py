@@ -225,13 +225,13 @@ if __name__ == '__main__':
         """
         To Clear Buffers... I know this is stupid.
         """
-        if values['radio0']:
+        if values['radio0'] and ret:
             cap.read(), cap.read(), cap.read(), cap.read()
-        elif values['radio1']:
+        elif values['radio1'] and ret:
             cap.read(), cap.read(), cap.read()
-        elif values['radio2']:
+        elif values['radio2'] and ret:
             cap.read(), cap.read()
-        elif values['radio3']:
+        elif values['radio3'] and ret:
             cap.read()
 
     window.close()
