@@ -8,7 +8,10 @@ Control camera on your Android from PC with Python
 (Perhaps, iPhone too. Not tested yet.)
 
 
-You need an app named "DroidCam" for this in your Android phone.
+You need "DroidCam" app for this in your Android phone.
+
+
+(https://play.google.com/store/apps/details?id=com.dev47apps.droidcam)
 
 # How to use?
 * Download DroidCam app on your Android and check IP and PORT.
