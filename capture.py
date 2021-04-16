@@ -171,18 +171,17 @@ window = sg.Window('Realtime movie', layout, location=(800, 400), finalize=True,
 
 if __name__ == '__main__':
     cap = cv2.VideoCapture(cameraURI + DIRNAME + SIZE640x480)
-    # cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('B', 'G', 'R', '3'))
-    # cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'))
-    cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('H', '2', '6', '4'))  # Not sure this works
-    # cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('Y', 'U', 'Y', 'V'))
-    cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+    toresize = False
     while cap.isOpened():
         ret, frame = cap.read()
-        if ret is True:
+        if ret:
+            if toresize:
+                frame = cv2.resize(frame, (640, 480))
             window['image'].update(data=cv2.imencode('.png', frame)[1].tobytes())
             # cv2.imshow('DroidCamImage', frame)
             window.set_title('Realtime movie --- Battery:' + cmdSender(getBattery) + ' %')
         event, values = window.read(timeout=1)
+
         if event in (None, 'Exit'):
             break
 
@@ -214,13 +213,13 @@ if __name__ == '__main__':
             cap.release()
             time.sleep(1)
             cap = cv2.VideoCapture(cameraURI + DIRNAME + SIZE640x480)
-            cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('H', '2', '6', '4'))
+            toresize = False
 
         elif event == '320X240':
             cap.release()
             time.sleep(1)
             cap = cv2.VideoCapture(cameraURI + DIRNAME + SIZE320x240)
-            cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('H', '2', '6', '4'))
+            toresize = True
 
         """
         To Clear Buffers... I know this is stupid.
