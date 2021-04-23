@@ -4,6 +4,7 @@ import PySimpleGUI as sg
 import urllib.request as urlreq
 import time
 import datetime
+import os
 
 PROTOCOL = 'http'  # Keep this
 IP = '192.168.0.53'  # Use one in DroidCAM
@@ -97,6 +98,14 @@ def cmdSender(cmd):
     except Exception as e:
         print(e)
     return ret
+
+
+"""
+Save directory check
+"""
+save_path = './SavedPhotos'
+if not os.path.exists(save_path):
+    os.mkdir(save_path)
 
 
 """
@@ -229,7 +238,7 @@ if __name__ == '__main__':
         elif event == 'SAVE PHOTO':
             timestamp = datetime.datetime.now().isoformat().replace(':', '-').replace('-', '').replace('.', '_')
             filename = f'{IP}_{PORT}_at_{timestamp}.png'
-            cv2.imwrite(f'./SavedPhotos/{filename}', frame)
+            cv2.imwrite(f'{save_path}/{filename}', frame)
 
         """
         To Clear Buffers... I know this is stupid.
