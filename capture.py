@@ -3,6 +3,7 @@ import cv2
 import PySimpleGUI as sg
 import urllib.request as urlreq
 import time
+import datetime
 
 PROTOCOL = 'http'  # Keep this
 IP = '192.168.0.53'  # Use one in DroidCAM
@@ -104,8 +105,12 @@ GUI Definition
 sg.theme('Black')
 
 # define the window layout
+img_layout = [
+            [sg.Image(filename='', key='image')],
+            [sg.Button('SAVE THIS PHOTO', size=(65, 2), font='Helvetica 14', border_width=3)]
+            ]
 layout = [
-        [sg.Text('DroidCam Movie', size=(40, 1), justification='center', font='Helvetica 20', key='-status-')],
+        [sg.Text('DroidCam RealTimeMovie', size=(40, 1), justification='center', font='Helvetica 20', key='-status-')],
         [sg.Button('LED ON/OFF', size=(12, 2), font='Helvetica 14'),
          sg.Button('AutoFocus', size=(12, 2), font='Helvetica 14'),
          sg.Button('Zoom +', size=(12, 2), font='Helvetica 14'),
@@ -116,7 +121,7 @@ layout = [
          sg.Button('WB Settings...', size=(12, 2), font='Helvetica 14'),
          sg.Button('640X480', size=(12, 2), font='Helvetica 14'),
          sg.Button('320X240', size=(12, 2), font='Helvetica 14'),],
-        [sg.Image(filename='', key='image')],
+        [sg.Frame('DroidCam Image', img_layout, element_justification='center')],
         [sg.Text('FASTER ←', size=(25, 1), justification='left', font='Helvetica 16'),
          sg.Text('→ SMOOTHER', size=(25, 1), justification='right', font='Helvetica 16')],
         [sg.Radio("Low Buffer", group_id=0, key='radio0', font='Helvetica 14'),
@@ -141,7 +146,7 @@ wbsetter_layout = [
 
 def wbSetting():
     newlayout = copy.deepcopy(wbsetter_layout)  # bc you can't reuse layout defined before
-    wbwindow = sg.Window('White Balance Settings', newlayout, location=(800, 400), finalize=True)
+    wbwindow = sg.Window('White Balance Settings', newlayout, location=(600, 200), finalize=True)
     while True:
         event, values = wbwindow.read(timeout=5)
         if event in (None, 'Done'):
@@ -167,7 +172,7 @@ def wbSetting():
 
 
 # create the window and show it without the plot
-window = sg.Window('Realtime movie', layout, location=(800, 400), finalize=True, element_justification='center')
+window = sg.Window('Play with DroidCam', layout, location=(600, 200), finalize=True, element_justification='center')
 
 if __name__ == '__main__':
     cap = cv2.VideoCapture(cameraURI + DIRNAME + SIZE640x480)
@@ -179,7 +184,7 @@ if __name__ == '__main__':
                 frame = cv2.resize(frame, (640, 480))
             window['image'].update(data=cv2.imencode('.png', frame)[1].tobytes())
             # cv2.imshow('DroidCamImage', frame)
-            window.set_title('Realtime movie --- Battery:' + cmdSender(getBattery) + ' %')
+            window.set_title('Play with DroidCam --- Battery:' + cmdSender(getBattery) + ' %')
         event, values = window.read(timeout=1)
 
         if event in (None, 'Exit'):
@@ -220,6 +225,11 @@ if __name__ == '__main__':
             time.sleep(1)
             cap = cv2.VideoCapture(cameraURI + DIRNAME + SIZE320x240)
             toresize = True
+
+        elif event == 'SAVE PHOTO':
+            timestamp = datetime.datetime.now().isoformat().replace(':', '-').replace('-', '').replace('.', '_')
+            filename = f'{IP}_{PORT}_at_{timestamp}.png'
+            cv2.imwrite(f'./SavedPhotos/{filename}', frame)
 
         """
         To Clear Buffers... I know this is stupid.
