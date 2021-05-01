@@ -32,8 +32,8 @@ Set "ask_settings=False" to skip IP/PORT settings on the App.
 
 # Camera Control
 You can control your camera with pushing buttons on a video window.  
-Save Photo button will save the frame shown in app.
-
+Save Photo button will save the frame shown in app.  
+![UI_image](https://raw.githubusercontent.com/AiueoABC/GUI_JoyStick/main/UI.bmp)
 
 # If you like,
 <a href="https://www.buymeacoffee.com/aiueoabc" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
