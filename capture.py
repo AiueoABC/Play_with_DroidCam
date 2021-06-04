@@ -235,7 +235,7 @@ if __name__ == '__main__':
             cap = cv2.VideoCapture(cameraURI + DIRNAME + SIZE320x240)
             toresize = True
 
-        elif event == 'SAVE PHOTO':
+        elif event == 'SAVE THIS PHOTO':
             timestamp = datetime.datetime.now().isoformat().replace(':', '-').replace('-', '').replace('.', '_')
             filename = f'{IP}_{PORT}_at_{timestamp}.png'
             cv2.imwrite(f'{save_path}/{filename}', frame)
