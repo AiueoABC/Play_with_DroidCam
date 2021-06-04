@@ -14,7 +14,7 @@ You need "DroidCam" app for this in your Android phone.
 (https://play.google.com/store/apps/details?id=com.dev47apps.droidcam)
 
 # How to use?
-
+If you just want to try how it works, please check the release too.  Windows executable file is available.
 
 * Clone this repo `git clone https://github.com/AiueoABC/Play_with_DroidCam.git`
 * Move to the cloned directory `cd Play_with_DroidCam`
@@ -36,4 +36,5 @@ Save Photo button will save the frame shown in app.
 ![UI_image](https://raw.githubusercontent.com/AiueoABC/Play_with_DroidCam/master/UI.bmp)
 
 # If you like,
+Please feed me!  
 <a href="https://www.buymeacoffee.com/aiueoabc" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
